@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/hello")
 public class HelloFlisolController {
 
-    @GetMapping("/{nome}")
+    @GetMapping
     public String hello(@PathVariable String nome) {
-        return "Bem-vindo ao Flisol " + nome + "!";
+        return "Bem-vindo ao Flisol!";
     }
 }
