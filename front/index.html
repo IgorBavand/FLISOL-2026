@@ -1,148 +1,297 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exemplo Palestra - Spring + HTML</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager - Spring Boot</title>
 
-        .card {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-        }
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
++
 
-        h2 {
-            margin-top: 0;
-            color: #333;
-            text-align: center;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        .input-box {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 1.5rem;
-        }
+    body {
+      font-family: Inter, 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      background: #f4f7fb;
+      color: #1f2937;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
 
-        input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            outline: none;
-        }
+    .app {
+      width: 100%;
+      max-width: 980px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.10);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      min-height: 560px;
+    }
 
-        input:focus { border-color: #007bff; }
+    .sidebar {
+      background: linear-gradient(180deg, #0f172a, #1e293b);
+      color: white;
+      padding: 32px;
+    }
 
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    .sidebar h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
 
-        button:hover { background: #0056b3; }
+    .sidebar p {
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-top: 12px;
+    }
 
-        ul {
-            list-style: none;
-            padding: 0;
-            max-height: 300px;
-            overflow-y: auto;
-        }
+    .tech-badge {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      font-size: 0.85rem;
+    }
 
-        li {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .content {
+      padding: 32px;
+    }
 
-        .badge {
-            font-size: 0.7rem;
-            padding: 3px 7px;
-            border-radius: 10px;
-            background: #e9ecef;
-            color: #495057;
-        }
-    </style>
+    .header {
+      margin-bottom: 28px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 1.6rem;
+      color: #111827;
+    }
+
+    .header span {
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+
+    .input-box {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    input {
+      flex: 1;
+      padding: 14px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 0 22px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 340px;
+      overflow-y: auto;
+    }
+
+    li {
+      padding: 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInItem 0.4s ease forwards;
+    }
+
+    @keyframes fadeInItem {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    li span:first-child {
+      font-weight: 500;
+      color: #111827;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-weight: 600;
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        padding: 24px;
+      }
+
+      .content {
+        padding: 24px;
+      }
+
+      .input-box {
+        flex-direction: column;
+      }
+
+      button {
+        padding: 14px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="card">
-    <h2>ToDo List API</h2>
-    
-    <div class="input-box">
-        <input type="text" id="taskInput" placeholder="Nova tarefa...">
-        <button onclick="addTask()">OK</button>
-    </div>
+  <main class="app">
+    <aside class="sidebar">
+      <h1>Task Manager</h1>
+      <p>Aplicação integrada com API REST em Spring Boot.</p>
+      <span class="tech-badge">Spring Boot + HTML + JS</span>
+    </aside>
 
-    <ul id="taskList">
-        </ul>
-</div>
+    <section class="content">
+      <div class="header">
+        <h2>Minhas tarefas</h2>
+        <span>Gerencie suas atividades com eficiência</span>
+      </div>
 
-<script>
+      <div class="input-box">
+        <input type="text" id="taskInput" placeholder="Adicionar nova tarefa">
+        <button onclick="addTask()">Adicionar</button>
+      </div>
+
+      <ul id="taskList"></ul>
+    </section>
+  </main>
+
+  <script>
     const API_URL = 'http://localhost:8080/tasks';
 
     document.getElementById('taskInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addTask();
+      if (e.key === 'Enter') addTask();
     });
 
-    async function fetchTasks() {
-        const list = document.getElementById('taskList');
-        try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error();
-            const tasks = await response.json();
-            
-            list.innerHTML = tasks.map(t => `
-                <li>
-                    <span>${t.title || 'Sem título'}</span>
-                    <span class="badge">${t.done ? 'Pronto' : 'Pendente'}</span>
-                </li>
-            `).join('');
-        } catch (error) {
-            list.innerHTML = '<p style="color:red">Erro: Backend offline.</p>';
+    function celebrate() {
+      const duration = 1200;
+      const end = Date.now() + duration;
+
+      const colors = ['#2563eb', '#4f46e5', '#22c55e', '#f59e0b'];
+
+      (function frame() {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 70,
+          origin: { x: 0 },
+          colors
+        });
+
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 70,
+          origin: { x: 1 },
+          colors
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
         }
+      })();
+    }
+
+    async function fetchTasks() {
+      const list = document.getElementById('taskList');
+
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error();
+
+        const tasks = await response.json();
+
+        list.innerHTML = tasks.map(t => `
+          <li>
+            <span>${t.title || 'Sem título'}</span>
+            <span class="badge">${t.done ? 'Pronto' : 'Pendente'}</span>
+          </li>
+        `).join('');
+      } catch (error) {
+        list.innerHTML = '<p style="color:#dc2626">Erro: Backend offline.</p>';
+      }
     }
 
     async function addTask() {
-        const input = document.getElementById('taskInput');
-        if (!input.value.trim()) return;
+      const input = document.getElementById('taskInput');
 
-        try {
-            await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    title: input.value, 
-                    done: false 
-                })
-            });
-            input.value = '';
-            fetchTasks();
-        } catch (error) {
-            alert('Erro ao salvar no Spring!');
-        }
+      if (!input.value.trim()) return;
+
+      try {
+        await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: input.value,
+            done: false
+          })
+        });
+
+        input.value = '';
+
+        celebrate();
+
+        fetchTasks();
+      } catch (error) {
+        alert('Erro ao salvar no Spring!');
+      }
     }
 
     fetchTasks();
-</script>
+  </script>
 
 </body>
 </html>
